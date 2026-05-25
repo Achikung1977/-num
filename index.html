@@ -395,7 +395,7 @@ function renderData(result){
   totalPages =
     result.totalPages;
 
-  result.data.forEach(item => {
+  result.data.forEach((item,index) => {
 
     const btn =
       document.createElement('button');
@@ -411,6 +411,40 @@ function renderData(result){
     btn.innerText =
       item.number;
 
+    // =========================
+    // ตรวจสอบการกดตามลำดับ
+    // =========================
+
+    let canClick = false;
+
+    // ปุ่มแรกของระบบ
+    if(
+      currentPage === 1 &&
+      index === 0
+    ){
+
+      canClick =
+        item.status !== 'Inactive';
+    }
+    else{
+
+      // หาปุ่มก่อนหน้า
+      const prevItem =
+        result.data[index - 1];
+
+      // ถ้าปุ่มก่อนหน้า inactive
+      // จึงกดปุ่มนี้ได้
+      if(
+        prevItem &&
+        prevItem.status === 'Inactive' &&
+        item.status !== 'Inactive'
+      ){
+
+        canClick = true;
+      }
+    }
+
+    // ถ้า inactive แล้ว
     if(
       item.status === 'Inactive'
     ){
@@ -418,13 +452,31 @@ function renderData(result){
       btn.disabled = true;
     }
 
-    btn.onclick = () => {
+    // ถ้ายังกดไม่ได้
+    if(
+      !canClick &&
+      item.status !== 'Inactive'
+    ){
 
-      openModal(
-        item.row,
-        item.number
-      );
-    };
+      btn.disabled = true;
+
+      btn.style.opacity = 0.5;
+
+      btn.style.cursor =
+        'not-allowed';
+    }
+
+    // ถ้ากดได้
+    if(canClick){
+
+      btn.onclick = () => {
+
+        openModal(
+          item.row,
+          item.number
+        );
+      };
+    }
 
     grid.appendChild(btn);
   });
