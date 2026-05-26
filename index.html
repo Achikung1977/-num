@@ -576,6 +576,7 @@ async function confirmInactive(){
   const buttons =
     document.querySelectorAll('.number-btn');
 
+  // เปลี่ยนสถานะปุ่มทันที
   buttons.forEach(btn => {
 
     if(
@@ -591,31 +592,7 @@ async function confirmInactive(){
     }
   });
 
-  // auto next page
-
-  const lastButton =
-    buttons[buttons.length - 1];
-
-  if(
-    lastButton &&
-    lastButton.innerText ==
-    selectedNumber
-  ){
-
-    if(currentPage < totalPages){
-
-      currentPage++;
-
-      setTimeout(() => {
-
-        loadData();
-
-      },300);
-    }
-  }
-
-  // save background
-
+  // บันทึก background
   fetch(API_URL,{
 
     method:'POST',
@@ -627,6 +604,14 @@ async function confirmInactive(){
       row:selectedRow
     })
   });
+
+  // โหลดหน้าเดิมใหม่
+  // เพื่อให้ลำดับถัดไปกดได้
+  setTimeout(() => {
+
+    loadData();
+
+  },300);
 }
 
 // ====================
